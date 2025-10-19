@@ -11,16 +11,20 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build"
+    "type-check": "vue-tsc --build",
+    "prepare": "husky"
   },
   "dependencies": {
     "vue": "^3.5.22"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.18.6",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
+    "husky": "^9.1.7",
     "npm-run-all2": "^8.0.4",
     "typescript": "~5.9.0",
     "vite": "^7.1.7",
