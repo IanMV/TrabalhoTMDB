@@ -3,8 +3,14 @@ import { ref, onMounted } from "vue";
 import api from "@/plugins/axios";
 import Loading from "vue-loading-overlay";
 import { useGenreStore } from "@/stores/genre";
+import { useRouter } from 'vue-router'
+const router = useRouter();
 
 const genreStore = useGenreStore();
+
+function openMovie(movieId, type) {
+  router.push({ name: "MovieDetails", params: { movieId, type } });
+}
 
 const isLoading = ref(false);
 
@@ -25,6 +31,8 @@ const formatDate = (date) => new Date(date).toLocaleDateString("pt-BR");
 const series = ref([]);
 
 const listSeries = async (genreId) => {
+  genreStore.setCurrentGenreId(genreId);
+  isLoading.value = true;
   const response = await api.get("discover/tv", {
     params: {
       with_genres: genreId,
@@ -32,13 +40,14 @@ const listSeries = async (genreId) => {
     },
   });
   series.value = response.data.results;
+  isLoading.value = false;
 };
 const genres = ref([]);
 
-onMounted(async () => {
+/*onMounted(async () => {
   const response = await api.get("genre/tv/list?language=pt-BR");
   genres.value = response.data.genres;
-});
+});*/
 </script>
 <template>
   <h1>Programas de TV</h1>
@@ -57,18 +66,19 @@ onMounted(async () => {
     <div v-for="serie in series" :key="serie.id" class="serie-card">
       <img
         :src="`https://image.tmdb.org/t/p/w500${serie.poster_path}`"
-        :alt="serie.title"
+        :alt="serie.name"
+        @click="openMovie(serie.id, 'tv')"
       />
       <div class="serie-details">
         <p class="serie-name">{{ serie.name }}</p>
-        <p class="serie-release-date">{{ formatDate(serie.release_date) }}</p>
+        <p class="serie-release-date">{{ formatDate(serie.first_air_date) }}</p>
         <p class="serie-genres">
           <span
             v-for="genre_id in serie.genre_ids"
             :key="genre_id"
             @click="listSeries(genre_id)"
           >
-            {{  genreStore.getGenreName(genre_id) }}
+            {{ genreStore.getGenreName(genre_id) }}
           </span>
         </p>
       </div>
