@@ -1,6 +1,17 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import api from "@/plugins/axios";
+const isLoading = ref(false);
+
+const getGenreName = (id) => genres.value.find((genre) => genre.id === id).name;
+
+/*function getGenreName(id) {
+  const genero = genres.value.find((genre) => genre.id === id);
+  return genero.name;
+}*/
+
+const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
+
 
 const series = ref([]);
 
@@ -39,9 +50,17 @@ onMounted(async () => {
         :alt="serie.title"
       />
       <div class="serie-details">
-        <p class="serie-title">{{ serie.name }}</p>
-        <p class="serie-release-date">{{ serie.first_air_date }}</p>
-        <p class="serie-genres">{{ serie.genre_ids }}</p>
+        <p class="serie-name">{{ serie.name }}</p>
+        <p class="serie-release-date">{{ formatDate(serie.release_date) }}</p>
+        <p class="serie-genres">
+            <span
+              v-for="genre_id in serie.genre_ids"
+              :key="genre_id"
+              @click="listSeries(genre_id)"
+            >
+              {{ getGenreName(genre_id) }}
+            </span>
+          </p>
       </div>
     </div>
   </div>
@@ -98,10 +117,34 @@ onMounted(async () => {
   padding: 0 0.5rem;
 }
 
-.serie-title {
+.serie-name {
   font-size: 1.1rem;
   font-weight: bold;
   line-height: 1.3rem;
   height: 3.2rem;
+}
+
+.serie-genres {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.serie-genres span {
+  background-color: #748708;
+  border-radius: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.serie-genres span:hover {
+  cursor: pointer;
+  background-color: #455a08;
+  box-shadow: 0 0 0.5rem #748708;
 }
 </style>
