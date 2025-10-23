@@ -1,11 +1,14 @@
-<script setup lang="ts"></script>
+<script setup>
+  import { ref, onMounted } from 'vue';
+  import api from './plugins/axios';
 
-<template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
-</template>
+  const moviesGenres = ref([]);
+  const TVGenres = ref([]);
 
-<style scoped></style>
+  onMounted(async () => {
+    let response = await api.get('genre/movie/list?language=pt-BR');
+    moviesGenres.value = response.data.genres;
+    response = await api.get('genre/tv/list?language=pt-BR');
+    TVGenres.value = response.data.genres;
+  });
+</script>
