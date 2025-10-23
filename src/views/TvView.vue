@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import api from "@/plugins/axios";
+import Loading from "vue-loading-overlay";
+
 const isLoading = ref(false);
 
 const getGenreName = (id) => genres.value.find((genre) => genre.id === id).name;
@@ -10,8 +12,7 @@ const getGenreName = (id) => genres.value.find((genre) => genre.id === id).name;
   return genero.name;
 }*/
 
-const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
-
+const formatDate = (date) => new Date(date).toLocaleDateString("pt-BR");
 
 const series = ref([]);
 
@@ -34,15 +35,16 @@ onMounted(async () => {
 <template>
   <h1>Programas de TV</h1>
   <ul class="genre-list">
-      <li
-    v-for="genre in genres"
-    :key="genre.id"
-    @click="listSeries(genre.id)"
-    class="genre-item"
-  >
-    {{ genre.name }}
-  </li>
-    </ul>
+    <li
+      v-for="genre in genres"
+      :key="genre.id"
+      @click="listSeries(genre.id)"
+      class="genre-item"
+    >
+      {{ genre.name }}
+    </li>
+  </ul>
+  <loading v-model:active="isLoading" is-full-page />
   <div class="serie-list">
     <div v-for="serie in series" :key="serie.id" class="serie-card">
       <img
@@ -53,14 +55,14 @@ onMounted(async () => {
         <p class="serie-name">{{ serie.name }}</p>
         <p class="serie-release-date">{{ formatDate(serie.release_date) }}</p>
         <p class="serie-genres">
-            <span
-              v-for="genre_id in serie.genre_ids"
-              :key="genre_id"
-              @click="listSeries(genre_id)"
-            >
-              {{ getGenreName(genre_id) }}
-            </span>
-          </p>
+          <span
+            v-for="genre_id in serie.genre_ids"
+            :key="genre_id"
+            @click="listSeries(genre_id)"
+          >
+            {{ getGenreName(genre_id) }}
+          </span>
+        </p>
       </div>
     </div>
   </div>
